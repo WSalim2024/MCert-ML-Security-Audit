@@ -1,0 +1,11 @@
+.venv/
+.idea/
+__pycache__/
+
+# Ignore Datasets (Privacy)
+*.csv
+
+# Ignore Artifacts (Security)
+*.pkl
+*.joblib
+*.sha256
