@@ -3,15 +3,19 @@ import numpy as np
 
 
 def create_dummy_csv():
+    """
+    Generate a dummy CSV file with proper class distribution for ML training.
+    Ensures at least 2 samples per class for stratified splitting.
+    """
     np.random.seed(42)
-    print("🎲 Generating multi-class data...")
+    print("[DATA] Generating multi-class data...")
 
     # Generate 100 rows, 4 feature columns
     data = np.random.rand(100, 4)
 
     df = pd.DataFrame(data, columns=['Feat1', 'Feat2', 'Feat3', 'Feat4'])
 
-    # FIX: Generate only 3 classes (0, 1, 2) to ensure adequate samples per class
+    # Generate only 3 classes (0, 1, 2) to ensure adequate samples per class
     # With 100 samples and 3 classes, each class gets ~33 samples on average
     df['Target'] = np.random.randint(0, 3, size=100)
 
@@ -26,7 +30,10 @@ def create_dummy_csv():
 
     df.to_csv('user_data.csv', index=False)
 
-    print(f"✅ Created 'user_data.csv' (Rows: {len(df)})")
+    print(f"[OK] Created 'user_data.csv'")
+    print(f"   Rows: {len(df)}")
+    print(f"   Features: {list(df.columns[:-1])}")
+    print(f"   Target: {df.columns[-1]}")
     print(f"   Target Distribution: {df['Target'].value_counts().sort_index().to_dict()}")
     print(f"   Min samples per class: {df['Target'].value_counts().min()}")
 

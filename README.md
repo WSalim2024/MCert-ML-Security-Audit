@@ -1,63 +1,112 @@
-# 🛡️ ML Security Audit Report
+# 🛡️ ML Code Security Audit: Vulnerability Simulator
 
-**Project:** Machine Learning Code Security Audit  
-**Date:** January 2026  
-**Author:** Waqar Salim  
-**Repository:** [MCert-ML-Security-Audit](https://github.com/WSalim2024/MCert-ML-Security-Audit)
+Interactive demonstration of ML security vulnerabilities and their mitigations, focusing on **Insecure Deserialization**, **Random State Flaws**, and **Unencrypted Model Storage**.
 
----
+## 🎯 Features
 
-## 🔍 Executive Summary
-This audit analyzed a legacy Machine Learning training pipeline for common security vulnerabilities. The review identified three critical flaws related to **Insecure Deserialization**, **Input Validation**, and **Predictable Randomness**. 
+- Side-by-side comparison of vulnerable vs. secure ML code
+- **Fernet AES-128 encryption** for model storage
+- **SHA-256 integrity verification** to detect tampering
+- **Cryptographically secure random seeds** using Python's `secrets` module
+- Interactive tampering simulation
+- Comprehensive audit report
 
-A remediation plan was executed, resulting in a secured pipeline that utilizes cryptographic best practices and integrity verification. A Streamlit-based **Vulnerability Simulator** was developed to demonstrate the contrast between the flawed and secured implementations.
+## 📋 Prerequisites
 
----
+```bash
+Python 3.8+
+pip install streamlit pandas scikit-learn cryptography joblib
+```
 
-## 🚨 Vulnerability Analysis
+## 🚀 Quick Start
 
-### 1. Insecure Deserialization (Critical)
-* **Vulnerability:** The code used the standard `pickle` library to serialize the trained model.
-* **Risk:** `pickle` is inherently insecure. Malicious actors can construct a "poisoned" pickle file that executes arbitrary code (Remote Code Execution - RCE) on the server when loaded.
-* **Status:** 🔴 **VULNERABLE** in `vulnerable_code.py`.
+### 1. Clone the Repository
+```bash
+git clone https://github.com/YOUR_USERNAME/MCert-ML-Security-Audit.git
+cd MCert-ML-Security-Audit
+```
 
-### 2. Lack of Input Validation (High)
-* **Vulnerability:** The pipeline accepted any CSV input without checking file structure, size, or data distribution.
-* **Risk:** Vulnerable to **Denial of Service (DoS)** via massive files, or runtime crashes due to malformed data (e.g., "One Class" errors in Logistic Regression).
-* **Status:** 🔴 **VULNERABLE** in `vulnerable_code.py`.
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-### 3. Predictable Random State (Medium)
-* **Vulnerability:** The model training used a hardcoded `random_state=42`.
-* **Risk:** Attackers knowing the seed can predict data splits and craft "poisoned" inputs that specifically target the training set to bias the model (Model Poisoning).
-* **Status:** 🔴 **VULNERABLE** in `vulnerable_code.py`.
+### 3. Generate Test Data
+```bash
+python generate_test_data.py
+```
 
----
+### 4. Run the Application
+```bash
+streamlit run app.py
+```
 
-## ✅ Remediation & Fixes
+### 5. Run Security Tests
+```bash
+python test_encryption.py
+```
 
-### 1. Secure Serialization & Integrity Checks
-* **Fix:** Replaced `pickle` with `joblib` (safer for numerical arrays).
-* **Enhancement:** Implemented **SHA-256 Hashing**. A separate `.sha256` checksum file is generated alongside the model. The loader verifies this hash before execution to prevent tampering.
-* **Status:** 🟢 **FIXED** in `secure_code.py`.
+## 📁 Project Structure
 
-### 2. Robust Input Sanitization
-* **Fix:** Added a `validate_and_load()` function that:
-    * Verifies file extension (`.csv`).
-    * Checks for null/infinite values.
-    * Ensures the target variable contains at least 3 classes to prevent mathematical solver crashes.
-* **Status:** 🟢 **FIXED** in `secure_code.py` & `generate_test_data.py`.
+```
+MCert-ML-Security-Audit/
+├── app.py                  # Streamlit UI application
+├── secure_code.py          # Secure ML pipeline with encryption
+├── vulnerable_code.py      # Vulnerable ML pipeline (demo only)
+├── generate_test_data.py   # Test data generator
+├── test_encryption.py      # Encryption test suite
+├── AUDIT_REPORT.md         # Security audit findings
+├── requirements.txt        # Python dependencies
+└── README.md               # This file
+```
 
-### 3. Cryptographic Randomness
-* **Fix:** Replaced hardcoded seeds with Python's `secrets` module (`secrets.randbelow()`) to generate non-deterministic, cryptographically strong seeds for data splitting.
-* **Status:** 🟢 **FIXED** in `secure_code.py`.
+## 🔐 Security Features Implemented
 
----
+| Vulnerability | Mitigation | Implementation |
+|--------------|------------|----------------|
+| No data validation | Input sanitization | `validate_and_load()` |
+| Fixed random state | Cryptographic RNG | `secrets.randbelow()` |
+| Unencrypted storage | AES-128 encryption | `Fernet` encryption |
+| No integrity check | SHA-256 hashing | Hash verification on load |
+| Pickle RCE risk | Safer serialization | `joblib` with encryption |
 
-## 🖥️ Vulnerability Simulator (Dashboard)
-An interactive **Streamlit Dashboard** (`app.py`) was created
+## 🧪 Test Cases
+
+Run `python test_encryption.py` to execute:
+
+| Test | Description | Expected Result |
+|------|-------------|-----------------|
+| Normal Operation | Save/load encrypted model | ✅ Success |
+| Tampering Detection | Modify encrypted file | ❌ Integrity check fails |
+| Wrong Key | Use different encryption key | ❌ Decryption fails |
+| Missing Key | Delete key file | ❌ Model unreadable |
+
+### Main Interface
+- **Left Panel**: Vulnerable implementation with security warnings
+- **Right Panel**: Secure implementation with encryption status
+
+### Integrity Verification
+- Verify model integrity with one click
+- Simulate tampering attacks to test detection
+
+## ⚠️ Security Warnings
+
+1. **Encryption Key**: In production, store `encryption.key` in a secure key vault (AWS KMS, Azure Key Vault)
+2. **Never commit keys**: Add `*.key` to `.gitignore`
+3. **Key rotation**: Implement 90-day key rotation policy
+
+## 📝 License
+
+For educational purposes only.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit changes
+4. Push to branch
+5. Open a Pull Request
 
 ## ✍️ Author
-#### Waqar Salim
 
-## ⚠️ Disclaimer
-This project is intended for educational purposes as part of a Master's degree portfolio. The code labeled "vulnerable" contains intentional security flaws for demonstration and must not be used in production environments. The "secure" implementations represent best practices for this specific context but should be integrated into a wider defense-in-depth strategy for enterprise deployment.
+**Waqar Salim**

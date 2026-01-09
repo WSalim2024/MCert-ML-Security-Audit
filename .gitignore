@@ -1,11 +1,39 @@
-.venv/
-.idea/
-__pycache__/
+# Encryption keys - NEVER commit these!
+*.key
+encryption.key
 
-# Ignore Datasets (Privacy)
-*.csv
-
-# Ignore Artifacts (Security)
+# Model files
 *.pkl
 *.joblib
+*.encrypted
 *.sha256
+
+# Data files
+user_data.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/
+
+# Jupyter
+.ipynb_checkpoints/
