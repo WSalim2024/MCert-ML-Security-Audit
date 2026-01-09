@@ -87,7 +87,7 @@ st.divider()
 # --- Audit Report Section ---
 st.subheader("📝 Audit Findings")
 try:
-    with open("AUDIT_REPORT.md", "r", encoding="utf-8") as f:
+    with open("README.md", "r", encoding="utf-8") as f:
         st.markdown(f.read())
 except FileNotFoundError:
     st.warning("Audit Report not found.")
